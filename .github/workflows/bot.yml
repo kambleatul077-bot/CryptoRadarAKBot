@@ -2,11 +2,16 @@ name: CryptoRadarAKBot
 
 on:
   workflow_dispatch:
+
   schedule:
     - cron: "*/5 * * * *"
 
 permissions:
   contents: write
+
+concurrency:
+  group: crypto-radar-bot
+  cancel-in-progress: false
 
 jobs:
   scan:
@@ -26,6 +31,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+
+      - name: Update repository
+        run: |
+          git config user.name "CryptoRadarAKBot"
+          git config user.email "actions@users.noreply.github.com"
+          git pull --rebase origin main
 
       - name: Run bot
         env:
