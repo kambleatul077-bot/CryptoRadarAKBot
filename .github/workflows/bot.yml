@@ -2,7 +2,6 @@ name: CryptoRadarAKBot
 
 on:
   workflow_dispatch:
-
   schedule:
     - cron: "*/5 * * * *"
 
@@ -16,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -37,6 +38,11 @@ jobs:
         run: |
           git config user.name "CryptoRadarAKBot"
           git config user.email "actions@users.noreply.github.com"
+
           git add seen_pairs.json
+
           git diff --cached --quiet || git commit -m "Update seen pairs"
-          git push
+
+          git pull --rebase origin main
+
+          git push origin main
